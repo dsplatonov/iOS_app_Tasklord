@@ -23,16 +23,25 @@ class MainViewController: UIViewController {
     }
     
     func getData() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
-            self.PagesService.getPosts(completion: { [weak self] pages in
-                guard let self = self else { return }
-                self.pages = pages
-                //            debugPrint(self.pages[0].descr)
-                
-            })
-            
+        
+        self.PagesService.getPosts(completion: { [weak self] pages in
+            guard let self = self else { return }
+            self.pages = pages
+            //            debugPrint(self.pages[0].descr)
             
         })
+        
+        
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+//            self.PagesService.getPosts(completion: { [weak self] pages in
+//                guard let self = self else { return }
+//                self.pages = pages
+//                //            debugPrint(self.pages[0].descr)
+//
+//            })
+//
+//
+//        })
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: {
             self.tasksTableView.reloadData()
 

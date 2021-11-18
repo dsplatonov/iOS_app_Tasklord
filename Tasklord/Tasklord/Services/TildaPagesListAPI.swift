@@ -12,6 +12,8 @@ class TildaPagesListAPI {
     
     
     func getPosts(completion: @escaping([Page]) -> ()) {
+        //constructing URL request
+        
         let configuration = URLSessionConfiguration.default
         let session = URLSession(configuration: configuration)
         var urlComps = URLComponents()
@@ -32,7 +34,28 @@ class TildaPagesListAPI {
             do {
                 let pagesData = try JSON(data)["result"].rawData()
                 let pages = try JSONDecoder().decode([Page].self, from: pagesData)
-                completion(pages)
+                
+                
+                //sorting for pages with tasks
+                var newPages:[Page] = []
+                
+                pages.forEach {
+                    let tasks = $0.title.components(separatedBy: " ")
+                    var flag = false
+                    tasks.forEach {
+                        if $0 == "Задание" {
+                            flag = true
+                            
+                        }
+                    }
+                    if flag {
+                        newPages.append($0)
+                        
+                    }
+                    
+                }
+                //returning array with tasks only
+                completion(newPages)
             } catch {
                 debugPrint(error.localizedDescription)
             }
