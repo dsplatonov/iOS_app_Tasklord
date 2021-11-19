@@ -6,14 +6,22 @@
 //
 
 import UIKit
+import Fuzi
 
 class MainViewController: UIViewController {
 
     @IBOutlet private var tasksTableView: UITableView!
     
+    //service for getting a list of pages + model
     private var PagesService = TildaPagesListAPI()
     private var pages:[Page] = []
     
+    //service for a page description
+    private var PageDescription = TildaPagesDescriptionAPI()
+    private var pageDescription: PageDescription?
+    private var parsedDescription: PageDescriptionParsed?
+
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,18 +38,6 @@ class MainViewController: UIViewController {
             //            debugPrint(self.pages[0].descr)
             
         })
-        
-        
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
-//            self.PagesService.getPosts(completion: { [weak self] pages in
-//                guard let self = self else { return }
-//                self.pages = pages
-//                //            debugPrint(self.pages[0].descr)
-//
-//            })
-//
-//
-//        })
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: {
             self.tasksTableView.reloadData()
 
@@ -52,10 +48,7 @@ class MainViewController: UIViewController {
     @IBAction func refreshButtonPushed(_ sender: Any) {
         self.getData()
         
-        
     }
-    
-    
 }
 
 extension MainViewController: UITableViewDataSource {
@@ -67,6 +60,25 @@ extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tasksTableView.dequeueReusableCell(withIdentifier: "TaskTableViewCell", for: indexPath)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        self.PageDescription.getPosts(pageId: self.pages[indexPath.row].id, completion: { description in
+            
+            DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+                self.parsedDescription?.description = description
+                let storyboard = UIStoryboard(name: "PageDescription", bundle: nil)
+                let vc = storyboard.instantiateInitialViewController()
+                guard let vc = vc else { return }
+                self.navigationController?.pushViewController(vc, animated: true)
+
+//                debugPrint(description)
+            })
+
+        })
+        
+//        debugPrint("Row \(indexPath.row) is selected")
     }
     
     
