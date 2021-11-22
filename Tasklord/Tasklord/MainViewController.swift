@@ -19,9 +19,6 @@ class MainViewController: UIViewController {
     //service for a page description
     private var PageDescription = TildaPagesDescriptionAPI()
     private var pageDescription: PageDescription?
-    private var parsedDescription: PageDescriptionParsed?
-
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,12 +62,13 @@ extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         self.PageDescription.getPosts(pageId: self.pages[indexPath.row].id, completion: { description in
-            
+                    
             DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
-                self.parsedDescription?.description = description
                 let storyboard = UIStoryboard(name: "PageDescription", bundle: nil)
-                let vc = storyboard.instantiateInitialViewController()
-                guard let vc = vc else { return }
+                guard let vc = storyboard.instantiateInitialViewController() as? PageDescriptionViewController else { return }
+                vc.configure(description: description)
+//                let vc = storyboard.instantiateInitialViewController()
+//                guard let vc = vc else { return }
                 self.navigationController?.pushViewController(vc, animated: true)
 
 //                debugPrint(description)

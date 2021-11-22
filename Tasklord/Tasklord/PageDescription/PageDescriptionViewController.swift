@@ -11,21 +11,16 @@ class PageDescriptionViewController: UIViewController {
 
     @IBOutlet private var descriptionScrollView: UIScrollView!
     @IBOutlet private var descriptionLabel: UILabel!
-    
-    private var parsedDescription: PageDescriptionParsed?
-    
+    private var descr: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if let description = parsedDescription?.description {
-            self.descriptionLabel.text = description
-        }
-    
-
+        self.descriptionLabel.text = self.descr
     }
     
-    
-    
+    func configure(description: String) {
+        self.descr = description
+    }
+
 
 }
